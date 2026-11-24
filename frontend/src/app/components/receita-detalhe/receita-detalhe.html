@@ -1,0 +1,41 @@
+<a routerLink="/" class="btn btn-link text-danger px-0 mb-3">&larr; Voltar para as receitas</a>
+
+@if (carregando()) {
+  <p class="text-muted">Carregando...</p>
+} @else if (erro()) {
+  <div class="alert alert-warning">{{ erro() }}</div>
+} @else {
+  @if (receita(); as r) {
+    <div class="card shadow-sm">
+      <div class="card-body p-4">
+        <span class="badge badge-categoria mb-2">{{ nomeCategoria(r.categoria) }}</span>
+        <h2 class="titulo">{{ r.nome }}</h2>
+        <p class="text-muted">
+          Tempo de preparo: {{ r.tempoPreparo }} min | Rende {{ r.porcoes }} {{ r.porcoes === 1 ? 'porção' : 'porções' }}
+          @if (r.autor) {
+            | Enviada por {{ r.autor }}
+          }
+        </p>
+
+        @if (r.status === 'pendente') {
+          <div class="alert alert-info py-2">Essa receita ainda está aguardando aprovação.</div>
+        }
+
+        <div class="row mt-3">
+          <div class="col-md-5 mb-3">
+            <h4>Ingredientes</h4>
+            <ul>
+              @for (item of r.ingredientes; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          </div>
+          <div class="col-md-7">
+            <h4>Modo de preparo</h4>
+            <p class="texto-preparo">{{ r.modoPreparo }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+}

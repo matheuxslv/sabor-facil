@@ -1,0 +1,40 @@
+<h2 class="titulo mb-3">Pesquisar receitas</h2>
+
+<form [formGroup]="form" (ngSubmit)="pesquisar()" class="row g-2 mb-4" novalidate>
+  <div class="col-md-9">
+    <input type="text" class="form-control" formControlName="nome" placeholder="Digite o nome da receita"
+      [class.is-invalid]="nome.invalid && nome.touched">
+
+    @if (nome.touched && nome.hasError('required')) {
+      <div class="invalid-feedback">Digite o nome da receita.</div>
+    }
+    @if (nome.touched && nome.hasError('minlength')) {
+      <div class="invalid-feedback">Digite pelo menos 2 letras.</div>
+    }
+    @if (nome.touched && nome.hasError('maxlength')) {
+      <div class="invalid-feedback">Máximo de 50 caracteres.</div>
+    }
+  </div>
+  <div class="col-md-3 d-grid">
+    <button type="submit" class="btn btn-danger" [disabled]="carregando()">Pesquisar</button>
+  </div>
+</form>
+
+@if (erro()) {
+  <div class="alert alert-danger">{{ erro() }}</div>
+}
+
+@if (pesquisou()) {
+  @if (resultados().length === 0) {
+    <p class="text-muted">Nenhuma receita encontrada para "{{ termo() }}".</p>
+  } @else {
+    <p class="text-muted">{{ resultados().length }} resultado(s) para "{{ termo() }}":</p>
+    <div class="row g-3">
+      @for (receita of resultados(); track receita.id) {
+        <div class="col-12 col-sm-6 col-lg-4">
+          <app-receita-card [receita]="receita" />
+        </div>
+      }
+    </div>
+  }
+}

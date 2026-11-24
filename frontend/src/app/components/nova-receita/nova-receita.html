@@ -1,0 +1,98 @@
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <h2 class="titulo">Enviar receita</h2>
+    <p class="text-muted">Preencha os dados abaixo. A receita vai para a moderação antes de aparecer no site.</p>
+
+    @if (sucesso()) {
+      <div class="alert alert-success">{{ sucesso() }}</div>
+    }
+    @if (erro()) {
+      <div class="alert alert-danger">{{ erro() }}</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="enviar()" class="card shadow-sm p-4" novalidate>
+      <div class="mb-3">
+        <label for="nome" class="form-label">Nome da receita *</label>
+        <input id="nome" type="text" class="form-control" formControlName="nome" [class.is-invalid]="invalido('nome')">
+        @if (invalido('nome')) {
+          <div class="invalid-feedback">
+            @if (campos.nome.hasError('required')) { Informe o nome da receita. }
+            @if (campos.nome.hasError('minlength')) { O nome deve ter pelo menos 3 caracteres. }
+            @if (campos.nome.hasError('maxlength')) { O nome deve ter no máximo 80 caracteres. }
+          </div>
+        }
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="categoria" class="form-label">Categoria *</label>
+          <select id="categoria" class="form-select" formControlName="categoria" [class.is-invalid]="invalido('categoria')">
+            <option value="">Selecione...</option>
+            @for (categoria of categorias; track categoria.valor) {
+              <option [value]="categoria.valor">{{ categoria.nome }}</option>
+            }
+          </select>
+          @if (invalido('categoria')) {
+            <div class="invalid-feedback">Escolha uma categoria válida.</div>
+          }
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="autor" class="form-label">Seu nome</label>
+          <input id="autor" type="text" class="form-control" formControlName="autor" [class.is-invalid]="invalido('autor')">
+          @if (invalido('autor')) {
+            <div class="invalid-feedback">Máximo de 50 caracteres.</div>
+          }
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="tempoPreparo" class="form-label">Tempo de preparo (minutos) *</label>
+          <input id="tempoPreparo" type="number" min="1" max="600" class="form-control" formControlName="tempoPreparo"
+            [class.is-invalid]="invalido('tempoPreparo')">
+          @if (invalido('tempoPreparo')) {
+            <div class="invalid-feedback">Informe um número inteiro entre 1 e 600.</div>
+          }
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="porcoes" class="form-label">Porções *</label>
+          <input id="porcoes" type="number" min="1" max="50" class="form-control" formControlName="porcoes"
+            [class.is-invalid]="invalido('porcoes')">
+          @if (invalido('porcoes')) {
+            <div class="invalid-feedback">Informe um número inteiro entre 1 e 50.</div>
+          }
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="ingredientes" class="form-label">Ingredientes * <small class="text-muted">(um por linha)</small></label>
+        <textarea id="ingredientes" rows="5" class="form-control" formControlName="ingredientes"
+          [class.is-invalid]="invalido('ingredientes')"></textarea>
+        @if (invalido('ingredientes')) {
+          <div class="invalid-feedback">
+            @if (campos.ingredientes.hasError('required')) { Informe os ingredientes. }
+            @if (campos.ingredientes.hasError('minimoLinhas')) { Coloque pelo menos 2 ingredientes, um em cada linha. }
+          </div>
+        }
+      </div>
+
+      <div class="mb-3">
+        <label for="modoPreparo" class="form-label">Modo de preparo *</label>
+        <textarea id="modoPreparo" rows="6" class="form-control" formControlName="modoPreparo"
+          [class.is-invalid]="invalido('modoPreparo')"></textarea>
+        @if (invalido('modoPreparo')) {
+          <div class="invalid-feedback">
+            @if (campos.modoPreparo.hasError('required')) { Informe o modo de preparo. }
+            @if (campos.modoPreparo.hasError('minlength')) { Escreva pelo menos 20 caracteres. }
+          </div>
+        }
+      </div>
+
+      <button type="submit" class="btn btn-danger" [disabled]="enviando()">
+        {{ enviando() ? 'Enviando...' : 'Enviar receita' }}
+      </button>
+    </form>
+  </div>
+</div>

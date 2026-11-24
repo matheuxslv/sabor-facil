@@ -1,0 +1,49 @@
+<h2 class="titulo">Moderação</h2>
+<p class="text-muted">Receitas enviadas que estão aguardando aprovação.</p>
+
+@if (mensagem()) {
+  <div class="alert alert-success">{{ mensagem() }}</div>
+}
+@if (erro()) {
+  <div class="alert alert-danger">{{ erro() }}</div>
+}
+
+@if (carregando()) {
+  <p class="text-muted">Carregando...</p>
+} @else if (pendentes().length === 0) {
+  <div class="alert alert-secondary">Nenhuma receita pendente no momento.</div>
+} @else {
+  <div class="row g-3">
+    @for (receita of pendentes(); track receita.id) {
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-sm h-100">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h5 class="card-title mb-0">{{ receita.nome }}</h5>
+              <span class="badge badge-categoria">{{ nomeCategoria(receita.categoria) }}</span>
+            </div>
+            <p class="text-muted small mb-2">
+              {{ receita.tempoPreparo }} min | {{ receita.porcoes }} porção(ões)
+              @if (receita.autor) { | Enviada por {{ receita.autor }} }
+            </p>
+
+            <details class="mb-3">
+              <summary>Ver ingredientes e modo de preparo</summary>
+              <ul class="mt-2">
+                @for (item of receita.ingredientes; track $index) {
+                  <li>{{ item }}</li>
+                }
+              </ul>
+              <p class="texto-preparo small">{{ receita.modoPreparo }}</p>
+            </details>
+
+            <div class="d-flex gap-2 mt-auto">
+              <button type="button" class="btn btn-success flex-fill" (click)="aprovar(receita)">Aprovar</button>
+              <button type="button" class="btn btn-outline-danger flex-fill" (click)="recusar(receita)">Recusar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+}
